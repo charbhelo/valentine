@@ -6,6 +6,7 @@
   <title>Happy Valentine ❤️</title>
   <style>
     * { box-sizing: border-box; }
+
     html, body {
       margin: 0;
       width: 100%;
@@ -21,109 +22,243 @@
       height: 100%;
       display: grid;
       place-items: center;
+      padding: 12px;
       background: radial-gradient(circle at top, #2a0012 0%, #000 65%);
     }
 
+    /* Photo fits full screen without cropping */
     .photo {
-      width: min(92vw, 900px);
-      height: min(78vh, 720px);
-      object-fit: cover;
-      border-radius: 18px;
-      box-shadow: 0 20px 80px rgba(0,0,0,0.6);
-      animation: softZoom 14s ease-in-out infinite alternate;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 14px;
+      box-shadow: 0 12px 45px rgba(0,0,0,0.55);
+      display: none; /* shown after password */
     }
 
-    @keyframes softZoom {
-      from { transform: scale(1); }
-      to   { transform: scale(1.04); }
-    }
-
-    .slide {
+    .message-wrap {
       position: absolute;
-      left: -120%;
-      bottom: 8%;
-      background: rgba(255, 30, 95, 0.90);
+      left: 50%;
+      bottom: 5%;
+      transform: translateX(-50%);
+      width: min(94vw, 1100px);
+      z-index: 6;
+      display: none; /* shown after password */
+    }
+
+    .message {
+      padding: 14px 20px;
+      border-radius: 18px;
+      background: rgba(255, 35, 110, 0.92);
       color: #fff;
-      padding: 16px 26px;
-      border-radius: 999px;
-      font-size: clamp(18px, 3vw, 34px);
       font-weight: 700;
-      letter-spacing: 0.5px;
+      line-height: 1.35;
+      text-align: center;
+      font-size: clamp(14px, 1.9vw, 24px);
       box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      animation: slideInOut 8s ease-in-out infinite;
-      white-space: nowrap;
+      min-height: 56px;
+      animation: softPulse 2.3s ease-in-out infinite;
     }
 
-    @keyframes slideInOut {
-      0%   { left: -120%; opacity: 0; }
-      12%  { left: 50%; transform: translateX(-50%); opacity: 1; }
-      75%  { left: 50%; transform: translateX(-50%); opacity: 1; }
-      100% { left: 120%; opacity: 0; }
+    .cursor {
+      display: inline-block;
+      margin-left: 2px;
+      animation: blink 0.8s infinite;
+      opacity: 1;
     }
 
-    .tap-overlay {
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%,100% { opacity: 0; }
+    }
+
+    @keyframes softPulse {
+      0%,100% { transform: scale(1); }
+      50%     { transform: scale(1.02); }
+    }
+
+    /* Password overlay */
+    .lock-overlay {
       position: absolute;
       inset: 0;
+      z-index: 20;
       display: grid;
       place-items: center;
-      background: rgba(0,0,0,0.45);
-      color: white;
-      text-align: center;
-      padding: 20px;
-      z-index: 9;
+      background: rgba(0,0,0,0.62);
+      padding: 18px;
     }
 
-    .tap-btn {
-      border: none;
+    .card {
+      width: min(92vw, 440px);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 16px;
+      backdrop-filter: blur(6px);
+      padding: 22px;
+      color: #fff;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+
+    .title { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
+    .sub { font-size: 14px; opacity: 0.92; margin-bottom: 12px; }
+
+    .pwd {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.30);
+      background: rgba(0,0,0,.25);
+      color: #fff;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .btn {
+      width: 100%;
+      margin-top: 10px;
+      border: 0;
       background: #ff2d7a;
       color: #fff;
-      padding: 14px 22px;
+      padding: 12px 14px;
       border-radius: 999px;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 8px 20px rgba(255,45,122,0.4);
+      box-shadow: 0 8px 20px rgba(255,45,122,.4);
     }
 
-    .sub {
-      margin-top: 10px;
+    .err {
+      margin-top: 9px;
+      min-height: 18px;
       font-size: 13px;
-      opacity: 0.9;
+      color: #ffd4e5;
+    }
+
+    .music-wrap {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 10;
+      display: none;
+    }
+
+    .music-btn {
+      border: 0;
+      background: #ff2d7a;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(255,45,122,0.35);
     }
   </style>
 </head>
 <body>
   <div class="screen">
-    <img class="photo" src="photo.jpeg" alt="Our Photo" />
+    <!-- Keep this name if you want easy replacement later -->
+    <img id="photo" class="photo" src="photo.jpeg" alt="Our Photo" />
 
-    <div class="slide">Happy Valentine Cartouna ❤️</div>
+    <div id="messageWrap" class="message-wrap">
+      <div id="message" class="message"></div>
+    </div>
 
-    <div id="overlay" class="tap-overlay" style="display:none;">
-      <div>
-        <button id="startBtn" class="tap-btn">Open with Love Song 🎵</button>
-        <div class="sub">If music doesn't auto-play, tap once.</div>
-      </div>
+    <div id="musicWrap" class="music-wrap">
+      <button id="musicBtn" class="music-btn">Play music 🎵</button>
     </div>
 
     <audio id="song" src="love-song.mp3" loop></audio>
+
+    <div id="lock" class="lock-overlay">
+      <div class="card">
+        <div class="title">Private Link 🔒</div>
+        <div class="sub">Enter password to open</div>
+        <input id="pwd" class="pwd" type="password" placeholder="Password" />
+        <button id="openBtn" class="btn">Open</button>
+        <div id="err" class="err"></div>
+      </div>
+    </div>
   </div>
 
   <script>
+    // ===== Your settings =====
+    const PASS = "cartouna";
+    const LOVE_TEXT = "Happy Valentine’s to my beautiful Cartouna 🌹 You make my world brighter, my heart calmer, and my life sweeter";
+    const TYPE_SPEED_MS = 45; // lower = faster typing
+    // =========================
+
+    const lock = document.getElementById("lock");
+    const pwd = document.getElementById("pwd");
+    const openBtn = document.getElementById("openBtn");
+    const err = document.getElementById("err");
+
+    const photo = document.getElementById("photo");
+    const messageWrap = document.getElementById("messageWrap");
+    const message = document.getElementById("message");
+
     const song = document.getElementById("song");
-    const overlay = document.getElementById("overlay");
-    const startBtn = document.getElementById("startBtn");
+    const musicWrap = document.getElementById("musicWrap");
+    const musicBtn = document.getElementById("musicBtn");
+
+    function typeMessage(text, speed) {
+      message.innerHTML = "";
+      const cursor = document.createElement("span");
+      cursor.className = "cursor";
+      cursor.textContent = "|";
+
+      let i = 0;
+      const timer = setInterval(() => {
+        message.textContent = text.slice(0, i + 1);
+        message.appendChild(cursor);
+        i++;
+        if (i >= text.length) {
+          clearInterval(timer);
+          setTimeout(() => { cursor.style.display = "none"; }, 800);
+        }
+      }, speed);
+    }
 
     async function tryPlay() {
       try {
         await song.play();
-        overlay.style.display = "none";
-      } catch (e) {
-        overlay.style.display = "grid";
+        musicBtn.textContent = "Music playing ❤️";
+      } catch {
+        musicBtn.textContent = "Play music 🎵";
       }
     }
 
-    window.addEventListener("load", tryPlay);
-    startBtn.addEventListener("click", tryPlay);
+    function showMain() {
+      lock.style.display = "none";
+      photo.style.display = "block";
+      messageWrap.style.display = "block";
+      musicWrap.style.display = "block";
+      typeMessage(LOVE_TEXT, TYPE_SPEED_MS);
+      tryPlay();
+    }
+
+    openBtn.addEventListener("click", () => {
+      if (pwd.value === PASS) {
+        err.textContent = "";
+        showMain();
+      } else {
+        err.textContent = "Wrong password, try again.";
+      }
+    });
+
+    pwd.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") openBtn.click();
+    });
+
+    musicBtn.addEventListener("click", async () => {
+      try {
+        await song.play();
+        musicBtn.textContent = "Music playing ❤️";
+      } catch {
+        musicBtn.textContent = "Tap again";
+      }
+    });
   </script>
 </body>
 </html>
