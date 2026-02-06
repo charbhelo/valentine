@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Valentine ❤️</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #000;
+    }
+
+    .screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at top, #2a0012 0%, #000 65%);
+    }
+
+    .photo {
+      width: min(92vw, 900px);
+      height: min(78vh, 720px);
+      object-fit: cover;
+      border-radius: 18px;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.6);
+      animation: softZoom 14s ease-in-out infinite alternate;
+    }
+
+    @keyframes softZoom {
+      from { transform: scale(1); }
+      to   { transform: scale(1.04); }
+    }
+
+    .slide {
+      position: absolute;
+      left: -120%;
+      bottom: 8%;
+      background: rgba(255, 30, 95, 0.90);
+      color: #fff;
+      padding: 16px 26px;
+      border-radius: 999px;
+      font-size: clamp(18px, 3vw, 34px);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      animation: slideInOut 8s ease-in-out infinite;
+      white-space: nowrap;
+    }
+
+    @keyframes slideInOut {
+      0%   { left: -120%; opacity: 0; }
+      12%  { left: 50%; transform: translateX(-50%); opacity: 1; }
+      75%  { left: 50%; transform: translateX(-50%); opacity: 1; }
+      100% { left: 120%; opacity: 0; }
+    }
+
+    .tap-overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(0,0,0,0.45);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      z-index: 9;
+    }
+
+    .tap-btn {
+      border: none;
+      background: #ff2d7a;
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 999px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(255,45,122,0.4);
+    }
+
+    .sub {
+      margin-top: 10px;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <img class="photo" src="photo.jpeg" alt="Our Photo" />
+
+    <div class="slide">Happy Valentine Cartouna ❤️</div>
+
+    <div id="overlay" class="tap-overlay" style="display:none;">
+      <div>
+        <button id="startBtn" class="tap-btn">Open with Love Song 🎵</button>
+        <div class="sub">If music doesn't auto-play, tap once.</div>
+      </div>
+    </div>
+
+    <audio id="song" src="love-song.mp3" loop></audio>
+  </div>
+
+  <script>
+    const song = document.getElementById("song");
+    const overlay = document.getElementById("overlay");
+    const startBtn = document.getElementById("startBtn");
+
+    async function tryPlay() {
+      try {
+        await song.play();
+        overlay.style.display = "none";
+      } catch (e) {
+        overlay.style.display = "grid";
+      }
+    }
+
+    window.addEventListener("load", tryPlay);
+    startBtn.addEventListener("click", tryPlay);
+  </script>
+</body>
+</html>
